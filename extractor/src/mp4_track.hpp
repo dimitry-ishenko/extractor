@@ -18,7 +18,7 @@ public:
 private:
     AP4_Track* track_ = nullptr;
     AP4_SampleTable* table_ = nullptr;
-    std::size_t sample_ = 0, count_ = 0;
+    unsigned sample_ = 0, count_ = 0;
 
     friend class file;
     explicit track(AP4_Track*);
