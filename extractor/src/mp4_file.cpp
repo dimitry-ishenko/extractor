@@ -6,10 +6,13 @@
 using std::cout;
 using std::endl;
 
+namespace mp4
+{
+
 constexpr auto meta = AP4_ATOM_TYPE('m', 'e', 't', 'a');
 constexpr auto mett = AP4_ATOM_TYPE('m', 'e', 't', 't');
 
-mp4::file::file(const std::string & name)
+file::file(const std::string & name)
 {
     AP4_ByteStream* s;
 
@@ -21,7 +24,7 @@ mp4::file::file(const std::string & name)
     file_.reset(new AP4_File { *s });
 }
 
-mp4::track mp4::file::find_trans()
+track file::find_trans()
 {
     auto& tracks = file_->GetMovie()->GetTracks();
     auto count = tracks.ItemCount();
@@ -29,17 +32,17 @@ mp4::track mp4::file::find_trans()
 
     for(decltype(count) n = 0; n < count; ++n)
     {
-        AP4_Track* track;
+        AP4_Track* trk;
 
         cout << "Processing track: " << n << endl;
-        auto res = tracks.Get(n, track);
+        auto res = tracks.Get(n, trk);
         if(AP4_FAILED(res)) throw std::invalid_argument("Failed to access track");
 
-        if(track->GetHandlerType() == meta)
+        if(trk->GetHandlerType() == meta)
         {
-            cout << "Detected metadata track: ID=" << track->GetId() << " name=" << track->GetTrackName() << endl;
+            cout << "Detected metadata track: ID=" << trk->GetId() << " name=" << trk->GetTrackName() << endl;
 
-            auto table = track->GetSampleTable();
+            auto table = trk->GetSampleTable();
             if(!table) throw std::invalid_argument("Missing sample table");
 
             auto count = table->GetSampleDescriptionCount();
@@ -66,7 +69,7 @@ mp4::track mp4::file::find_trans()
                         if(type == "ion/transcription_1")
                         {
                             cout << "Detected application/transcription_1 MIME type" << endl;
-                            return mp4::track(track);
+                            return track(trk);
                         }
                     }
                 }
@@ -76,5 +79,7 @@ mp4::track mp4::file::find_trans()
         cout << "Skipping" << endl;
     }
 
-    return mp4::track();
+    return track();
+}
+
 }

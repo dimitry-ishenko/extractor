@@ -7,7 +7,10 @@
 using std::cout;
 using std::endl;
 
-mp4::track::track(AP4_Track* trk) : track_(trk)
+namespace mp4
+{
+
+track::track(AP4_Track* trk) : track_(trk)
 {
     cout << "Processing track: ID=" << track_->GetId() << " name=" << track_->GetTrackName() << endl;
     table_ = track_->GetSampleTable();
@@ -15,7 +18,7 @@ mp4::track::track(AP4_Track* trk) : track_(trk)
     cout << "Found " << count_ << " samples" << endl;
 }
 
-payload mp4::track::read_sample()
+payload track::read_sample()
 {
     payload data;
 
@@ -43,4 +46,6 @@ payload mp4::track::read_sample()
     }
 
     return data;
+}
+
 }

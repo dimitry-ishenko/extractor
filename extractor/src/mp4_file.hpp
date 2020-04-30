@@ -14,7 +14,7 @@ class file
 {
 public:
     explicit file(const std::string&);
-    mp4::track find_trans();
+    track find_trans();
 
 private:
     std::unique_ptr<AP4_ByteStream> stream_;
