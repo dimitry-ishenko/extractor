@@ -9,7 +9,6 @@ set(SOURCES
     src/main.cpp
     src/mp4_file.cpp
     src/mp4_file.hpp
-    src/mp4_sample.cpp
     src/mp4_sample.hpp
     src/mp4_track.cpp
     src/mp4_track.hpp
