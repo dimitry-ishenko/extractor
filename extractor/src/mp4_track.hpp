@@ -1,7 +1,7 @@
 #ifndef MP4_TRACK_HPP
 #define MP4_TRACK_HPP
 
-#include "mp4_sample.hpp"
+#include "types.hpp"
 #include "Ap4.h"
 
 namespace mp4
@@ -13,7 +13,7 @@ public:
     track() = default;
     bool is_valid() const { return track_; }
 
-    mp4::sample read_sample();
+    payload read_sample();
 
 private:
     AP4_Track* track_ = nullptr;

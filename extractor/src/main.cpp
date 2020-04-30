@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
         auto track = file.find_trans();
 
         auto sample = track.read_sample();
-        while(sample.is_valid())
+        while(sample.size())
         {
             // TODO
             sample = track.read_sample();

@@ -1,8 +1,8 @@
 #include "mp4_track.hpp"
 
 #include <iostream>
+#include <memory>
 #include <stdexcept>
-#include <utility>
 
 using std::cout;
 using std::endl;
@@ -15,8 +15,10 @@ mp4::track::track(AP4_Track* trk) : track_(trk)
     cout << "Found " << count_ << " samples" << endl;
 }
 
-mp4::sample mp4::track::read_sample()
+payload mp4::track::read_sample()
 {
+    payload data;
+
     if(sample_ < count_)
     try
     {
@@ -26,19 +28,19 @@ mp4::sample mp4::track::read_sample()
         auto res = table_->GetSample(sample_, sample);
         if(AP4_FAILED(res)) throw std::invalid_argument("Failed to read sample");
 
-        std::unique_ptr<AP4_DataBuffer> data { new AP4_DataBuffer() };
-        res = sample.ReadData(*data);
+        std::unique_ptr<AP4_DataBuffer> temp { new AP4_DataBuffer() };
+        res = sample.ReadData(*temp);
         if(AP4_FAILED(res)) throw std::invalid_argument("Failed to read sample data");
 
         sample_++;
-        cout << "Read " << data->GetDataSize() << " bytes" << endl;
+        data = payload(temp->GetData(), temp->GetData() + temp->GetDataSize());
 
-        return mp4::sample(std::move(data));
+        cout << "Read " << data.size() << " bytes" << endl;
     }
     catch(std::exception& e)
     {
         std::cerr << e.what() << endl;
     }
 
-    return mp4::sample();
+    return data;
 }
