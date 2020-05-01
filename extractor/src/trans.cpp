@@ -8,12 +8,12 @@
 namespace trans
 {
 
-piece decode(const payload& data)
+words decode(const payload& data)
 {
-    trans::piece piece;
-    auto pos = data.begin(), end = data.end();
+    words wds;
 
-    std::advance(pos, 4); // skip 4 bytes - dunno what they are
+    auto pos = data.begin(), end = data.end();
+    std::advance(pos, 4);
 
     while(pos < end)
     try
@@ -21,7 +21,7 @@ piece decode(const payload& data)
         auto msg = protobuf::parse_field(pos, end);
         if(msg.id == 1 && msg.type == protobuf::embed)
         {
-            trans::word word;
+            word wd;
 
             while(msg.data.from < msg.data.to)
             {
@@ -30,31 +30,27 @@ piece decode(const payload& data)
                 {
                 case 1:
                     if(fld.type == protobuf::embed)
-                        word.text = fld.data.as_string();
+                        wd.text = fld.data.to_string();
                     break;
 
                 case 2:
                     if(fld.type == protobuf::embed)
-                        word.text2 = fld.data.as_string();
+                        wd.text2 = fld.data.to_string();
                     break;
 
                 case 3:
                     if(fld.type == protobuf::varint)
-                        word.start = fld.data.value;
+                        wd.start = fld.data.value;
                     break;
 
                 case 4:
                     if(fld.type == protobuf::varint)
-                        word.end = fld.data.value;
+                        wd.end = fld.data.value;
                     break;
                 }
             }
 
-            piece.words.push_back(std::move(word));
-        }
-        else if(msg.id == 2 && msg.type == protobuf::fixed32)
-        {
-            piece.len = *(float*)(&msg.data.value);
+            wds.push_back(std::move(wd));
         }
     }
     catch(std::exception& e)
@@ -62,7 +58,7 @@ piece decode(const payload& data)
         std::cerr << e.what() << std::endl;
     }
 
-    return piece;
+    return wds;
 }
 
 }

@@ -15,13 +15,9 @@ struct word
     timestamp start = no_time, end = no_time;
 };
 
-struct piece
-{
-    std::vector<word> words;
-    float len;
-};
+using words = std::vector<word>;
 
-piece decode(const payload&);
+words decode(const payload&);
 
 }
 
