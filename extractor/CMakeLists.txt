@@ -13,6 +13,8 @@ set(SOURCES
     src/mp4_track.hpp
     src/protobuf.cpp
     src/protobuf.hpp
+    src/trans.cpp
+    src/trans.hpp
     src/types.hpp
 )
 set(DOCS LICENSE.md README.md)
