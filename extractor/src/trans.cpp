@@ -44,12 +44,12 @@ words decode(const payload& data)
 
                 case 3:
                     if(fld.type == protobuf::varint)
-                        wd.start = fld.data.value;
+                        wd.start = ms(fld.data.value);
                     break;
 
                 case 4:
                     if(fld.type == protobuf::varint)
-                        wd.end = fld.data.value;
+                        wd.end = ms(fld.data.value);
                     break;
 
                 default: ++fld_dropped;

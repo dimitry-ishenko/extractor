@@ -3,16 +3,20 @@
 
 #include "types.hpp"
 
+#include <chrono>
 #include <string>
 #include <vector>
 
 namespace trans
 {
 
+using ms = std::chrono::milliseconds;
+using timestamp = ms;
+
 struct word
 {
     std::string text, text2;
-    timestamp start = no_time, end = no_time;
+    timestamp start, end;
 
     auto const& get_text() const { return text2.size() ? text2 : text; }
 };
