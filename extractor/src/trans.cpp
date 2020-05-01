@@ -10,6 +10,8 @@
 namespace trans
 {
 
+constexpr auto npos = std::string::npos;
+
 words decode(const payload& data)
 {
     words wds;
@@ -79,14 +81,29 @@ void script::add_words(words wds)
 void script::save_to(const std::string& name)
 try
 {
+    std::cout << "Opening transcript file: " << name << std::endl;
     std::fstream fs;
     fs.exceptions(std::ios::failbit | std::ios::badbit);
-
     fs.open(name, std::ios::out | std::ios::trunc);
-    for(auto const& wd : words_) fs << wd.get_text() << ' ';
+
+    auto dropped = 0;
+
+    std::cout << "Saving transcript" << std::endl;
+    for(auto const& wd : words_)
+    {
+        auto text = wd.get_text();
+        if(text.size())
+        {
+            //
+            fs << text << ' ';
+        }
+        else ++dropped;
+    }
     fs << std::endl;
 
     fs.close();
+
+    std::cout << "Dropped: " << dropped << " words" << std::endl;
 }
 catch(std::exception& e)
 {
