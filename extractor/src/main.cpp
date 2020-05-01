@@ -25,11 +25,11 @@ int main(int argc, char* argv[])
 
         auto track = file.find_trans();
 
-        auto sample = track.read_sample();
-        while(sample.size())
+        auto data = track.read_sample();
+        while(data.size())
         {
-            script.add_words(trans::decode(sample));
-            sample = track.read_sample();
+            script.add_words(data);
+            data = track.read_sample();
         }
 
         script.save_to(argv[2]);

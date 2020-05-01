@@ -12,14 +12,13 @@ namespace trans
 
 constexpr auto npos = std::string::npos;
 
-words decode(const payload& data)
+void script::add_words(const payload& data)
 {
-    words wds;
+    auto count = 0;
+    auto msg_dropped = 0, fld_dropped = 0;
 
     auto pos = data.begin(), end = data.end();
     std::advance(pos, 4);
-
-    auto msg_dropped = 0, fld_dropped = 0;
 
     while(pos < end)
     try
@@ -27,7 +26,7 @@ words decode(const payload& data)
         auto msg = protobuf::parse_field(pos, end);
         if(msg.id == 1 && msg.type == protobuf::embed)
         {
-            word wd;
+            trans::word word;
 
             while(msg.data.from < msg.data.to)
             {
@@ -36,29 +35,30 @@ words decode(const payload& data)
                 {
                 case 1:
                     if(fld.type == protobuf::embed)
-                        wd.text = fld.data.to_string();
+                        word.text = fld.data.to_string();
                     break;
 
                 case 2:
                     if(fld.type == protobuf::embed)
-                        wd.text2 = fld.data.to_string();
+                        word.text2 = fld.data.to_string();
                     break;
 
                 case 3:
                     if(fld.type == protobuf::varint)
-                        wd.start = ms(fld.data.value);
+                        word.start = ms(fld.data.value);
                     break;
 
                 case 4:
                     if(fld.type == protobuf::varint)
-                        wd.end = ms(fld.data.value);
+                        word.end = ms(fld.data.value);
                     break;
 
                 default: ++fld_dropped;
                 }
             }
 
-            wds.push_back(std::move(wd));
+            words_.push_back(std::move(word));
+            ++count;
         }
         else ++msg_dropped;
     }
@@ -67,15 +67,8 @@ words decode(const payload& data)
         std::cerr << e.what() << std::endl;
     }
 
-    std::cout << "Decoded: " << wds.size() << " words" << std::endl;
+    std::cout << "Decoded: " << count << " words" << std::endl;
     std::cout << "Dropped: " << msg_dropped << " messages, " << fld_dropped << " fields" << std::endl;
-
-    return wds;
-}
-
-void script::add_words(words wds)
-{
-    for(auto& wd : wds) words_.push_back(std::move(wd));
 }
 
 void script::save_to(const std::string& name)

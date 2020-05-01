@@ -23,14 +23,12 @@ struct word
 
 using words = std::vector<word>;
 
-words decode(const payload&);
-
 class script
 {
 public:
     script() = default;
 
-    void add_words(words);
+    void add_words(const payload&);
     void save_to(const std::string&);
 
 private:
