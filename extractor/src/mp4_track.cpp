@@ -12,7 +12,7 @@ track::track(AP4_Track* trk) : track_(trk)
     std::cout << "Processing track: ID=" << track_->GetId() << " name=" << track_->GetTrackName() << std::endl;
     table_ = track_->GetSampleTable();
     count_ = table_->GetSampleCount();
-    std::cout << "Found " << count_ << " samples" << std::endl;
+    std::cout << "Found: " << count_ << " samples" << std::endl;
 }
 
 payload track::read_sample()
@@ -35,7 +35,7 @@ payload track::read_sample()
         sample_++;
         data = payload { temp->GetData(), temp->GetData() + temp->GetDataSize() };
 
-        std::cout << "Read " << data.size() << " bytes" << std::endl;
+        std::cout << "Read: " << data.size() << " bytes" << std::endl;
     }
     catch(std::exception& e)
     {
