@@ -4,18 +4,15 @@
 #include <memory>
 #include <stdexcept>
 
-using std::cout;
-using std::endl;
-
 namespace mp4
 {
 
 track::track(AP4_Track* trk) : track_(trk)
 {
-    cout << "Processing track: ID=" << track_->GetId() << " name=" << track_->GetTrackName() << endl;
+    std::cout << "Processing track: ID=" << track_->GetId() << " name=" << track_->GetTrackName() << std::endl;
     table_ = track_->GetSampleTable();
     count_ = table_->GetSampleCount();
-    cout << "Found " << count_ << " samples" << endl;
+    std::cout << "Found " << count_ << " samples" << std::endl;
 }
 
 payload track::read_sample()
@@ -25,7 +22,7 @@ payload track::read_sample()
     if(sample_ < count_)
     try
     {
-        cout << "Reading sample: " << sample_ << endl;
+        std::cout << "Reading sample: " << sample_ << std::endl;
 
         AP4_Sample sample;
         auto res = table_->GetSample(sample_, sample);
@@ -36,13 +33,13 @@ payload track::read_sample()
         if(AP4_FAILED(res)) throw std::invalid_argument("Failed to read sample data");
 
         sample_++;
-        data = payload(temp->GetData(), temp->GetData() + temp->GetDataSize());
+        data = payload { temp->GetData(), temp->GetData() + temp->GetDataSize() };
 
-        cout << "Read " << data.size() << " bytes" << endl;
+        std::cout << "Read " << data.size() << " bytes" << std::endl;
     }
     catch(std::exception& e)
     {
-        std::cerr << e.what() << endl;
+        std::cerr << e.what() << std::endl;
     }
 
     return data;
