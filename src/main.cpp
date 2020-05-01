@@ -6,9 +6,6 @@
 #include <stdexcept>
 #include <string>
 
-using std::cout;
-using std::endl;
-
 int main(int argc, char* argv[])
 {
     int code = 0;
@@ -17,7 +14,7 @@ int main(int argc, char* argv[])
     try
     {
         if(argc != 3) throw std::invalid_argument(
-            "Usage: " + app + " <audio-file-path> <transcript-path>"
+            "Usage: " + app + " <audio-file> <transcript>"
         );
 
         mp4::file file { argv[1] };
@@ -36,7 +33,7 @@ int main(int argc, char* argv[])
     }
     catch(const std::exception& e)
     {
-        std::cerr << e.what() << endl;
+        std::cerr << e.what() << std::endl;
         code = 1;
     }
 
