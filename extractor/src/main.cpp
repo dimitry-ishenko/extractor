@@ -1,6 +1,6 @@
 #include "mp4_file.hpp"
 #include "mp4_track.hpp"
-#include "trans.hpp"
+#include "tran_script.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
         );
 
         mp4::file file { argv[1] };
-        trans::script script;
+        tran::script script;
 
         auto track = file.find_trans();
 

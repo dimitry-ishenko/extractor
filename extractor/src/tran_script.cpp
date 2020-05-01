@@ -1,5 +1,5 @@
 #include "protobuf.hpp"
-#include "trans.hpp"
+#include "tran_script.hpp"
 
 #include <exception>
 #include <fstream>
@@ -7,10 +7,8 @@
 #include <iterator>
 #include <utility>
 
-namespace trans
+namespace tran
 {
-
-constexpr auto npos = std::string::npos;
 
 void script::add_words(const payload& data)
 {
@@ -26,7 +24,7 @@ void script::add_words(const payload& data)
         auto msg = protobuf::parse_field(pos, end);
         if(msg.id == 1 && msg.type == protobuf::embed)
         {
-            trans::word word;
+            script::word word;
 
             while(msg.data.from < msg.data.to)
             {
