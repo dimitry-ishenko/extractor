@@ -27,6 +27,7 @@ private:
         ms start, end;
 
         auto const& get_text() const { return text2.size() ? text2 : text; }
+        std::string get_time() const;
     };
     using words = std::vector<word>;
 
