@@ -15,7 +15,7 @@ file::file(const std::string & name)
 {
     AP4_ByteStream* s;
 
-    std::cout << "Opening file: " << name << std::endl;
+    std::cout << "Opening audio file: " << name << std::endl;
     auto res = AP4_FileByteStream::Create(name.data(), AP4_FileByteStream::STREAM_MODE_READ, s);
     if(AP4_FAILED(res)) throw std::invalid_argument("Failed to open file");
 
@@ -27,7 +27,7 @@ track file::find_trans()
 {
     auto& tracks = file_->GetMovie()->GetTracks();
     auto count = tracks.ItemCount();
-    std::cout << "Found " << count << " tracks" << std::endl;
+    std::cout << "Found: " << count << " tracks" << std::endl;
 
     for(decltype(count) n = 0; n < count; ++n)
     {
@@ -39,13 +39,13 @@ track file::find_trans()
 
         if(trk->GetHandlerType() == meta)
         {
-            std::cout << "Detected metadata track: ID=" << trk->GetId() << " name=" << trk->GetTrackName() << std::endl;
+            std::cout << "Detected: meta track" << std::endl;
 
             auto table = trk->GetSampleTable();
             if(!table) throw std::invalid_argument("Missing sample table");
 
             auto count = table->GetSampleDescriptionCount();
-            std::cout << "Found " << count << " sample descriptions" << std::endl;
+            std::cout << "Found: " << count << " sample descriptions" << std::endl;
 
             for(decltype(count) n = 0; n < count; ++n)
             {
@@ -54,7 +54,7 @@ track file::find_trans()
 
                 if(desc->GetFormat() == mett)
                 {
-                    std::cout << "Detected timed text format" << std::endl;
+                    std::cout << "Detected: mett format" << std::endl;
                     if(auto atom = dynamic_cast<AP4_UnknownSampleEntry*>(desc->ToAtom()))
                     {
                         auto payload = atom->GetPayload();
@@ -69,7 +69,7 @@ track file::find_trans()
 
                         if(type == "ion/transcription_1")
                         {
-                            std::cout << "Detected application/transcription_1 MIME type" << std::endl;
+                            std::cout << "Detected: application/transcription_1 type" << std::endl;
                             return track(trk);
                         }
                     }
