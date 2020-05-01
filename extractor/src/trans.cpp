@@ -17,6 +17,8 @@ words decode(const payload& data)
     auto pos = data.begin(), end = data.end();
     std::advance(pos, 4);
 
+    auto msg_dropped = 0, fld_dropped = 0;
+
     while(pos < end)
     try
     {
@@ -49,16 +51,22 @@ words decode(const payload& data)
                     if(fld.type == protobuf::varint)
                         wd.end = fld.data.value;
                     break;
+
+                default: ++fld_dropped;
                 }
             }
 
             wds.push_back(std::move(wd));
         }
+        else ++msg_dropped;
     }
     catch(std::exception& e)
     {
         std::cerr << e.what() << std::endl;
     }
+
+    std::cout << "Decoded: " << wds.size() << " words" << std::endl;
+    std::cout << "Dropped: " << msg_dropped << " messages, " << fld_dropped << " fields" << std::endl;
 
     return wds;
 }
