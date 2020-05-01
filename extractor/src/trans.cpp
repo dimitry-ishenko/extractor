@@ -2,8 +2,10 @@
 #include "trans.hpp"
 
 #include <exception>
+#include <fstream>
 #include <iostream>
 #include <iterator>
+#include <utility>
 
 namespace trans
 {
@@ -59,6 +61,28 @@ words decode(const payload& data)
     }
 
     return wds;
+}
+
+void script::add_words(words wds)
+{
+    for(auto& wd : wds) words_.push_back(std::move(wd));
+}
+
+void script::save_to(const std::string& name)
+try
+{
+    std::fstream fs;
+    fs.exceptions(std::ios::failbit | std::ios::badbit);
+
+    fs.open(name, std::ios::out | std::ios::trunc);
+    for(auto const& wd : words_) fs << wd.get_text() << ' ';
+    fs << std::endl;
+
+    fs.close();
+}
+catch(std::exception& e)
+{
+    std::cerr << e.what() << std::endl;
 }
 
 }
