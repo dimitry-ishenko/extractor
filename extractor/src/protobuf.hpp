@@ -18,14 +18,14 @@ enum type
 };
 
 using iterator = payload::const_iterator;
-using std::uint64_t;
+using value = std::uint64_t;
 
 struct data
 {
     iterator from, to;
-    uint64_t value;
+    protobuf::value value;
 
-    auto as_string() const { return std::string(from, to); }
+    auto to_string() const { return std::string(from, to); }
 };
 
 struct field
