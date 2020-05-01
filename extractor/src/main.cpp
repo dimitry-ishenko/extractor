@@ -1,5 +1,6 @@
 #include "mp4_file.hpp"
 #include "mp4_track.hpp"
+#include "trans.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -12,23 +13,26 @@ int main(int argc, char* argv[])
 {
     int code = 0;
     std::string app = argv[0];
-    cout << "Starting " << app << endl;
 
     try
     {
-        if(argc != 2) throw std::invalid_argument("Usage: " + app + " <filename>");
+        if(argc != 3) throw std::invalid_argument(
+            "Usage: " + app + " <audio-file-path> <transcript-path>"
+        );
 
-        std::string name = argv[1];
-        mp4::file file { name };
+        mp4::file file { argv[1] };
+        trans::script script;
 
         auto track = file.find_trans();
 
         auto sample = track.read_sample();
         while(sample.size())
         {
-            // TODO
+            script.add_words(trans::decode(sample));
             sample = track.read_sample();
         }
+
+        script.save_to(argv[2]);
     }
     catch(const std::exception& e)
     {
@@ -36,6 +40,5 @@ int main(int argc, char* argv[])
         code = 1;
     }
 
-    cout << "Exiting " << app << endl;
     return code;
 }
