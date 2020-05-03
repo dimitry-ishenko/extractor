@@ -22,6 +22,10 @@ set(SOURCES
     src/tran_script.hpp
     src/types.hpp
 )
+if(WIN32)
+    list(APPEND SOURCES res/extractor.rc)
+endif()
+
 set(DOCS LICENSE.md README.md)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
