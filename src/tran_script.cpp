@@ -53,14 +53,20 @@ void script::add_words(const payload& data)
     std::cout << "Dropped: " << msg_dropped << " messages, " << fld_dropped << " fields" << std::endl;
 }
 
-void script::save_to(const std::string& name)
+void script::save_to(const std::string& path, int rate)
 {
     auto paras = 0, words = 0, dropped = 0;
 
-    std::cout << "Opening transcript file: " << name << std::endl;
+    std::cout << "Opening transcript file: " << path << std::endl;
     std::fstream fs;
     fs.exceptions(std::ios::failbit | std::ios::badbit);
-    fs.open(name, std::ios::out | std::ios::trunc);
+    fs.open(path, std::ios::out | std::ios::trunc);
+
+    if(rate) std::cout << "Adding time-stamps every " << (
+        rate == 1 ? "" :
+        rate == 2 ? "2nd " :
+        rate == 3 ? "3rd " : std::to_string(rate) + "th "
+    ) << "paragraph" << std::endl;
 
     for(auto const& word : words_)
     {
@@ -68,9 +74,13 @@ void script::save_to(const std::string& name)
         {
             if(text[0] == '\n')
             {
-                if(word.start > ms(0)) fs << "\n\n[" << word.get_time() << "]\n";
-
                 text.erase(0, 1);
+                if(paras) fs << std::endl << std::endl;
+
+                if(rate && paras % rate == 0)
+                {
+                    if(word.start > ms(0)) fs << "[" + word.get_time() + "]" << std::endl;
+                }
                 paras++;
             }
 
