@@ -9,6 +9,8 @@ option(BUILD_APPS "" OFF)
 add_subdirectory(Bento4)
 
 set(SOURCES
+    src/args.cpp
+    src/args.hpp
     src/main.cpp
     src/mp4_file.cpp
     src/mp4_file.hpp
