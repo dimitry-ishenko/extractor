@@ -28,9 +28,10 @@ Option is one or more of the following:
 
     --save-to=<script>  Save the transcript to a location specified by
                         <script>. The <script> may contain special tokens:
-                        %p - path of the audio file, %n - name of the audio
-                        file and %e - extension. If this option is omitted,
-                        the transcript is saved in "%p/%n.txt".
+                        %p - path of the audio file with trailing slash,
+                        %n - name of the audio file and %e - extension with
+                        leading dot. If this option is omitted, the transcript
+                        is saved in "%p%n.txt".
 
     --time[=<n>]        Add time-stamps to the transcript before every <n>-th
                         paragraph. If <n> is omitted, it is assumed to be 1.
@@ -99,7 +100,7 @@ args read_args(int argc, char* argv[])
     }
 
     if(args.audio.empty()) throw missing_param("<audio>");
-    if(script.empty()) script = "%p/%n.txt";
+    if(script.empty()) script = "%p%n.txt";
 
     bool pc = false;
     for(auto ch : script)
@@ -109,7 +110,13 @@ args read_args(int argc, char* argv[])
             switch(ch)
             {
             case '%': args.script += '%'; break;
-            case 'p': args.script += args.audio.parent_path(); break;
+            case 'p':
+                if(!args.audio.parent_path().empty())
+                {
+                    args.script += args.audio.parent_path();
+                    args.script += '/';
+                }
+                break;
             case 'n': args.script += args.audio.stem(); break;
             case 'e': args.script += args.audio.extension(); break;
             default : args.script += '%'; args.script += ch;
