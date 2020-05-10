@@ -14,6 +14,8 @@ DECLARE(invalid_option  , "Invalid option"      );
 DECLARE(extra_param     , "Extraneous parameter");
 DECLARE(missing_param   , "Missing parameter"   );
 
+constexpr auto npos = std::string::npos;
+
 std::string usage(const std::string& name)
 {
     return "Usage: " + name + R"( [option] <audio>
@@ -29,8 +31,11 @@ Option is one or more of the following:
     --rate[=<n>]        Add time-stamps to the transcript before every <n>-th
                         paragraph. If <n> is omitted, it is assumed to be 1.
 
-    --save-to=<script>  Save the transcript to <script> instead of the default
-                        location.)";
+    --save-to=<script>  Save the transcript to a location specified by
+                        <script>. The <script> may contain special tokens:
+                        %p - path of the audio file, %n - name of the audio
+                        file and %e - extension. If this option is omitted,
+                        the transcript is saved in "%p/%n.%e.txt".)";
 }
 
 auto starts_with(const std::string& arg, const std::string& opt)
@@ -41,6 +46,7 @@ auto starts_with(const std::string& arg, const std::string& opt)
 args read_args(int argc, char* argv[])
 {
     struct args args;
+    std::string script;
 
     for(int n = 1; n < argc; ++n)
     {
@@ -54,9 +60,9 @@ args read_args(int argc, char* argv[])
         }
         else if(starts_with(arg, "--save-to="))
         {
-            if(args.script.empty())
+            if(script.empty())
             {
-                args.script = arg.substr(arg.find('=') + 1);
+                script = arg.substr(arg.find('=') + 1);
             }
             else throw duplicate_option(arg);
         }
@@ -88,7 +94,43 @@ args read_args(int argc, char* argv[])
     }
 
     if(args.audio.empty()) throw missing_param("<audio>");
-    if(args.script.empty()) args.script = args.audio + ".txt";
+    if(script.empty()) script = "%p/%n.%e.txt";
+
+    std::string path, name = args.audio, ext;
+
+    auto p = name.rfind('/');
+    if(p != npos)
+    {
+        path = name.substr(0, p);
+        name.erase(0, p + 1);
+    }
+
+    p = name.rfind('.');
+    if(p != npos)
+    {
+        ext = name.substr(p + 1);
+        name.erase(p);
+    }
+
+    bool pc = false;
+    for(auto ch : script)
+    {
+        if(pc)
+        {
+            switch(ch)
+            {
+            case '%': args.script += '%'; break;
+            case 'p': args.script += path; break;
+            case 'n': args.script += name; break;
+            case 'e': args.script += ext ; break;
+            default : args.script += '%'; args.script += ch;
+            }
+            pc = false;
+        }
+        else if(ch == '%') pc = true;
+        else args.script += ch;
+    }
+    if(pc) args.script += '%';
 
     return args;
 }
