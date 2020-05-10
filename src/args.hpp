@@ -10,6 +10,7 @@ struct args
     bool help = false;
     int rate = 0;
     std::string script;
+    bool version = false;
     std::string audio;
 };
 

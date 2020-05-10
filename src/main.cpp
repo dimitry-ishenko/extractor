@@ -9,15 +9,21 @@
 
 int main(int argc, char* argv[])
 {
-    int code = 0;
     std::string name = argv[0];
+    auto p = name.rfind('/');
+    if(p != std::string::npos) name.erase(0, p + 1);
 
+    int code = 0;
     try
     {
         auto args = read_args(argc, argv);
         if(args.help)
         {
             std::cout << usage(name) << std::endl;
+        }
+        else if(args.version)
+        {
+            std::cout << name << " version " << PROJECT_VERSION << std::endl;
         }
         else
         {
@@ -41,6 +47,5 @@ int main(int argc, char* argv[])
         std::cerr << e.what() << std::endl;
         code = 1;
     }
-
     return code;
 }

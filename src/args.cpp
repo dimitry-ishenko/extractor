@@ -26,7 +26,7 @@ for example, by the Google Recorder app on Android.
 
 Option is one or more of the following:
 
-    --help              Print this help screen and exit.
+    --help, -h          Print this help screen and exit.
 
     --save-to=<script>  Save the transcript to a location specified by
                         <script>. The <script> may contain special tokens:
@@ -35,7 +35,9 @@ Option is one or more of the following:
                         the transcript is saved in "%p/%n.%e.txt".
 
     --time[=<n>]        Add time-stamps to the transcript before every <n>-th
-                        paragraph. If <n> is omitted, it is assumed to be 1.)";
+                        paragraph. If <n> is omitted, it is assumed to be 1.
+
+    --version, -v       Show version and exit.)";
 }
 
 auto starts_with(const std::string& arg, const std::string& opt)
@@ -81,6 +83,11 @@ args read_args(int argc, char* argv[])
                 if(args.rate < 1) throw invalid_option(arg);
             }
             else throw duplicate_option(arg);
+        }
+        else if(arg == "-v" || arg == "--version")
+        {
+            args.version = true;
+            return args;
         }
         else if(arg[0] == '-')
         {

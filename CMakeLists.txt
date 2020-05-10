@@ -8,6 +8,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(BUILD_APPS "" OFF)
 add_subdirectory(Bento4)
 
+add_definitions(-DPROJECT_VERSION=${CMAKE_PROJECT_VERSION})
+
 set(SOURCES
     src/args.cpp
     src/args.hpp
