@@ -4,6 +4,7 @@
 #include "types.hpp"
 
 #include <chrono>
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -16,7 +17,7 @@ public:
     script() = default;
 
     void add_words(const payload&);
-    void save_to(const std::string&, int rate = 0);
+    void save_to(const std::filesystem::path&, int rate = 0);
 
 private:
     using ms = std::chrono::milliseconds;

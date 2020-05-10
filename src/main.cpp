@@ -3,15 +3,14 @@
 #include "mp4_track.hpp"
 #include "tran_script.hpp"
 
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 
 int main(int argc, char* argv[])
 {
-    std::string name = argv[0];
-    auto p = name.rfind('/');
-    if(p != std::string::npos) name.erase(0, p + 1);
+    auto name = std::filesystem::path(argv[0]).filename().string();
 
     int code = 0;
     try

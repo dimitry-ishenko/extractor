@@ -4,8 +4,8 @@
 #include "mp4_track.hpp"
 #include "Ap4.h"
 
+#include <filesystem>
 #include <memory>
-#include <string>
 
 namespace mp4
 {
@@ -13,7 +13,7 @@ namespace mp4
 class file
 {
 public:
-    explicit file(const std::string&);
+    explicit file(const std::filesystem::path&);
     track find_trans();
 
 private:

@@ -14,8 +14,6 @@ DECLARE(invalid_option  , "Invalid option"      );
 DECLARE(extra_param     , "Extraneous parameter");
 DECLARE(missing_param   , "Missing parameter"   );
 
-constexpr auto npos = std::string::npos;
-
 std::string usage(const std::string& name)
 {
     return "Usage: " + name + R"( [option] <audio>
@@ -32,7 +30,7 @@ Option is one or more of the following:
                         <script>. The <script> may contain special tokens:
                         %p - path of the audio file, %n - name of the audio
                         file and %e - extension. If this option is omitted,
-                        the transcript is saved in "%p/%n.%e.txt".
+                        the transcript is saved in "%p/%n.txt".
 
     --time[=<n>]        Add time-stamps to the transcript before every <n>-th
                         paragraph. If <n> is omitted, it is assumed to be 1.
@@ -101,23 +99,7 @@ args read_args(int argc, char* argv[])
     }
 
     if(args.audio.empty()) throw missing_param("<audio>");
-    if(script.empty()) script = "%p/%n.%e.txt";
-
-    std::string path, name = args.audio, ext;
-
-    auto p = name.rfind('/');
-    if(p != npos)
-    {
-        path = name.substr(0, p);
-        name.erase(0, p + 1);
-    }
-
-    p = name.rfind('.');
-    if(p != npos)
-    {
-        ext = name.substr(p + 1);
-        name.erase(p);
-    }
+    if(script.empty()) script = "%p/%n.txt";
 
     bool pc = false;
     for(auto ch : script)
@@ -127,9 +109,9 @@ args read_args(int argc, char* argv[])
             switch(ch)
             {
             case '%': args.script += '%'; break;
-            case 'p': args.script += path; break;
-            case 'n': args.script += name; break;
-            case 'e': args.script += ext ; break;
+            case 'p': args.script += args.audio.parent_path(); break;
+            case 'n': args.script += args.audio.stem(); break;
+            case 'e': args.script += args.audio.extension(); break;
             default : args.script += '%'; args.script += ch;
             }
             pc = false;

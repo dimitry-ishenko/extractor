@@ -11,12 +11,12 @@ constexpr auto mett = AP4_ATOM_TYPE('m', 'e', 't', 't');
 
 constexpr auto npos = std::string::npos;
 
-file::file(const std::string & path)
+file::file(const std::filesystem::path& path)
 {
     AP4_ByteStream* s;
 
     std::cout << "Opening audio file: " << path << std::endl;
-    auto res = AP4_FileByteStream::Create(path.data(), AP4_FileByteStream::STREAM_MODE_READ, s);
+    auto res = AP4_FileByteStream::Create(path.string().data(), AP4_FileByteStream::STREAM_MODE_READ, s);
     if(AP4_FAILED(res)) throw std::invalid_argument("Failed to open file");
 
     stream_.reset(s);

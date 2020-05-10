@@ -53,7 +53,7 @@ void script::add_words(const payload& data)
     std::cout << "Dropped: " << msg_dropped << " messages, " << fld_dropped << " fields" << std::endl;
 }
 
-void script::save_to(const std::string& path, int rate)
+void script::save_to(const std::filesystem::path& path, int rate)
 {
     auto paras = 0, words = 0, dropped = 0;
 
