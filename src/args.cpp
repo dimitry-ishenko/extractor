@@ -28,14 +28,14 @@ Option is one or more of the following:
 
     --help              Print this help screen and exit.
 
-    --rate[=<n>]        Add time-stamps to the transcript before every <n>-th
-                        paragraph. If <n> is omitted, it is assumed to be 1.
-
     --save-to=<script>  Save the transcript to a location specified by
                         <script>. The <script> may contain special tokens:
                         %p - path of the audio file, %n - name of the audio
                         file and %e - extension. If this option is omitted,
-                        the transcript is saved in "%p/%n.%e.txt".)";
+                        the transcript is saved in "%p/%n.%e.txt".
+
+    --time[=<n>]        Add time-stamps to the transcript before every <n>-th
+                        paragraph. If <n> is omitted, it is assumed to be 1.)";
 }
 
 auto starts_with(const std::string& arg, const std::string& opt)
