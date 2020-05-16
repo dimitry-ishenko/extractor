@@ -6,7 +6,7 @@ Extract transcripts from audio files created with the Google Recorder app.
 
 ### Prerequisites
 
-* [Bento4 library](https://github.com/dimitry-ishenko/Bento4)
+* [Bento4 library](https://github.com/axiomatic-systems/Bento4.git)
 
 ### Installation
 
